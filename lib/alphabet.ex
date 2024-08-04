@@ -79,4 +79,21 @@ defmodule Alphabet do
   """
   @spec connectives() :: term()
   def connectives, do: @connectives
+
+  @doc """
+  Obtain the precedence of a given logical connective.
+
+  Returns an integer.
+
+  ## Example
+
+      iex> Alphabet.connective_precedence(:!)
+      4
+
+  """
+  @spec connective_precedence(atom) :: integer
+  def connective_precedence(connective) when is_atom(connective) do
+    {_, precedence} = Keyword.fetch(@connectives_precedence, connective)
+    precedence
+  end
 end
