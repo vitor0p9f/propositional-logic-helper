@@ -45,7 +45,7 @@ defmodule Alphabet do
 
   ## Example
 
-      iex> Alphabet.propositional_symbols
+      iex> Alphabet.truthy_symbols
       ~r/#{Regex.source(@truthy_symbols)}/
 
   """
@@ -59,7 +59,7 @@ defmodule Alphabet do
 
   ## Example
 
-      iex> Alphabet.propositional_symbols
+      iex> Alphabet.punctuation
       ~r/#{Regex.source(@punctuation)}/
 
   """
@@ -73,7 +73,7 @@ defmodule Alphabet do
 
   ## Example
 
-      iex> Alphabet.propositional_symbols
+      iex> Alphabet.connectives
       ~r/#{Regex.source(@connectives)}/
 
   """
