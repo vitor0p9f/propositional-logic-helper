@@ -32,7 +32,15 @@ defmodule Parser do
   @spec verify(list(String.t())) :: :ok
   def verify([]), do: :ok
 
-  def verify([_]), do: :ok
+  def verify([symbol]) do
+    unless String.match?(symbol, Alphabet.propositional_symbols()) or
+             String.match?(symbol, Alphabet.truthy_symbols()) do
+      raise SyntaxError,
+        message: "connectives or punctuation cannot be considered true or false."
+    end
+
+    :ok
+  end
 
   def verify(list = [head, second | tail]) when is_list(list) do
     allowed_symbols =
