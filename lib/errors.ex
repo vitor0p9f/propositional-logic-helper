@@ -5,3 +5,11 @@ defmodule UnexpectedCharacterError do
 
   defexception [:message]
 end
+
+defmodule SyntaxError do
+  @moduledoc """
+  Occurs when the parser encounters a syntax error.
+  """
+
+  defexception [:message]
+end
