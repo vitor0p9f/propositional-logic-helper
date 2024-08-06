@@ -10,5 +10,13 @@ defmodule ParserTest do
         assert_raise SyntaxError, fn -> Parser.verify(case) end
       end)
     end
+
+    test "when the logic expression has one element, and it isn't a propositional or truthy symbol" do
+      cases = [["("], [")"], ["!"], ["&"], ["|"], [">"], ["="]]
+
+      Enum.each(cases, fn case ->
+        assert_raise SyntaxError, fn -> Parser.verify(case) end
+      end)
+    end
   end
 end
