@@ -96,4 +96,30 @@ defmodule Alphabet do
     {_, precedence} = Keyword.fetch(@connectives_precedence, connective)
     precedence
   end
+
+  @doc """
+  Obtain the type of a symbol according to the propositional logic alphabet.
+
+  Returns an atom.
+
+  ## Example
+
+      iex> Alphabet.symbol_type("=")
+      :biconditional
+
+  """
+  @spec symbol_type(String.t()) :: atom()
+  def symbol_type(symbol) when is_binary(symbol) do
+    cond do
+      String.match?(symbol, propositional_symbols()) -> :propositional
+      String.match?(symbol, truthy_symbols()) -> :truthy
+      String.match?(symbol, ~r/\(/) -> :open
+      String.match?(symbol, ~r/\)/) -> :close
+      String.match?(symbol, ~r/\!/) -> :negation
+      String.match?(symbol, ~r/\&/) -> :conjunction
+      String.match?(symbol, ~r/\|/) -> :disjunction
+      String.match?(symbol, ~r/\>/) -> :implication
+      String.match?(symbol, ~r/\=/) -> :biconditional
+    end
+  end
 end
