@@ -73,4 +73,79 @@ defmodule Parser do
         message: "the '#{symbol}' symbol cannot be after the '#{previous_symbol}' symbol."
     end
   end
+
+  @doc """
+  Generate a Reverse Polish Notation(RPN) from an expression.
+
+  Returns a list with the expression in the RPN form.
+
+  ## Example
+
+      iex> Parser.generate_RPN(["A","|","B"])
+      ["A","B","|"]
+
+      iex> Parser.generate_RPN(["(","A","&","B",")","|","C"])
+      ["A","B","&","C","|"]
+
+      iex> Parser.generate_RPN(["(","(","A","&","B",")","|","C",")","=","D"])
+      ["A","B","&","C","|","D","="]
+  """
+  @spec generate_RPN(list(String.t())) :: list(String.t())
+  def generate_RPN(list) when is_list(list),
+    do: String.split(expression_generator(list, [], ""), "", trim: true)
+
+  defp expression_generator([], [], expression), do: expression
+
+  defp expression_generator([], stack, expression), do: expression <> Enum.join(stack)
+
+  defp expression_generator(
+         [list_head | list_tail],
+         stack,
+         expression
+       ) do
+    cond do
+      String.match?(list_head, Alphabet.propositional_symbols()) or
+          String.match?(list_head, Alphabet.truthy_symbols()) ->
+        expression_generator(list_tail, stack, expression <> list_head)
+
+      String.match?(list_head, Alphabet.punctuation()) and list_head == "(" ->
+        expression_generator(list_tail, [list_head | stack], expression)
+
+      String.match?(list_head, Alphabet.punctuation()) and list_head == ")" ->
+        {updated_expression, updated_stack} =
+          append_from_stack_to_expression(stack, expression, fn item ->
+            item != "("
+          end)
+
+        expression_generator(list_tail, updated_stack, updated_expression)
+
+      String.match?(list_head, Alphabet.connectives()) ->
+        if Enum.empty?(stack) do
+          expression_generator(list_tail, [list_head | stack], expression)
+        else
+          {updated_expression, updated_stack} =
+            append_from_stack_to_expression(stack, expression, fn symbol ->
+              String.match?(symbol, Alphabet.connectives()) and
+                Alphabet.connective_precedence(String.to_atom(symbol)) <=
+                  Alphabet.connective_precedence(String.to_atom(list_head))
+            end)
+
+          expression_generator(
+            list_tail,
+            [list_head | List.delete(updated_stack, "(")],
+            updated_expression
+          )
+        end
+    end
+  end
+
+  defp append_from_stack_to_expression([], expression, _), do: {expression, []}
+
+  defp append_from_stack_to_expression(stack = [head | tail], expression, condition) do
+    if condition.(head) do
+      append_from_stack_to_expression(tail, expression <> head, condition)
+    else
+      {expression, stack}
+    end
+  end
 end
