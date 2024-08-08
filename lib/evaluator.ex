@@ -10,7 +10,7 @@ defmodule Evaluator do
 
   ## Example
 
-      iex> Evaluator.evaluate(["A", "B", ">", "0", "D", "|", "1", "=", "&"], %{"A" => true, "B" => false, "C" => true, "0" => false})
+      iex> Evaluator.evaluate(["A", "B", ">", "0", "D", "|", "1", "=", "&"], %{"A" => true, "B" => false, "D" => true, "0" => false})
       false
 
       iex> Evaluator.evaluate(["A", "B", "!", "&", "B", "!", "|", "A", "="], %{"A" => false, "B" => true})
