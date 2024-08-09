@@ -8,7 +8,7 @@ defmodule Parser do
     close: [:close, :conjunction, :disjunction, :implication, :biconditional],
     open: [:propositional, :truthy, :open, :negation],
     negation: [:propositional, :truthy, :open, :negation],
-    other_connectives: [:propositional, :truthy, :open, :negation]
+    other_connectives: [:propositional, :truthy, :open]
   }
 
   @doc """
@@ -34,7 +34,8 @@ defmodule Parser do
 
   def verify([symbol]) do
     unless String.match?(symbol, Alphabet.propositional_symbols()) or
-             String.match?(symbol, Alphabet.truthy_symbols()) do
+             String.match?(symbol, Alphabet.truthy_symbols()) or
+             Alphabet.symbol_type(symbol) == :close do
       raise SyntaxError,
         message: "connectives or punctuation cannot be considered true or false."
     end
