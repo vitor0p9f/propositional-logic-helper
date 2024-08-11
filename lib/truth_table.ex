@@ -25,7 +25,27 @@ defmodule TruthTable do
 
     table = table ++ [generate_bottom_line(symbols, expression)]
 
+    results =
+      Enum.reduce(Enum.to_list(1..number_of_rows), [], fn row, acc ->
+        new_symbols_values =
+          Enum.into(symbols_values, %{}, fn {key, value} ->
+            if key == "0" or key == "1" do
+              {key, value}
+            else
+              {key, Enum.at(value, row - 1)}
+            end
+          end)
+
+        acc ++ [Evaluator.evaluate(rpn_expression, new_symbols_values)]
+      end)
+
     print(table)
+
+    properties = get_expression_properties(results)
+
+    IO.puts("\nThe proposition #{expression} has the following characteristics:\n")
+
+    Enum.each(properties, fn property -> IO.puts("It's #{property}.") end)
   end
 
   defp print([row]), do: IO.puts(row)
@@ -150,8 +170,6 @@ defmodule TruthTable do
         end
       end)
 
-    IO.inspect(new_symbols_values)
-
     result =
       if Evaluator.evaluate(rpn_expression, new_symbols_values) do
         "T"
@@ -161,7 +179,7 @@ defmodule TruthTable do
 
     if rem(String.length(expression), 2) == 0 do
       row <>
-        String.duplicate("X ", div(String.length(expression) + 2, 2) - 1) <>
+        String.duplicate(" ", div(String.length(expression) + 2, 2) - 1) <>
         "#{result}" <>
         String.duplicate(" ", div(String.length(expression) + 2, 2)) <>
         "│"
@@ -188,5 +206,20 @@ defmodule TruthTable do
       "─" <>
       String.duplicate("─", String.length(expression)) <>
       "─┘"
+  end
+
+  defp get_expression_properties(results) do
+    answers = []
+
+    cond do
+      Enum.all?(results) ->
+        List.flatten([["a tautology", "satisfiable"] | answers])
+
+      Enum.any?(results) ->
+        ["satisfiable" | answers]
+
+      true ->
+        ["a contradiction" | answers]
+    end
   end
 end
