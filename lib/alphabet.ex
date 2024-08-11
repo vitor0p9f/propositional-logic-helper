@@ -8,7 +8,7 @@ defmodule Alphabet do
   @truthy_symbols ~r/[01]/
   @punctuation ~r/[\(\)]/
   @connectives ~r/[!&|>=]/
-  @connectives_precedence [&: 4, |: 3, >: 2, =: 1, !: 0]
+  @connectives_precedence [&: 3, |: 2, >: 1, =: 0, !: 4]
 
   @doc """
   Obtain a regex sigil with all valid symbols.
