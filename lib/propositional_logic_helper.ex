@@ -12,8 +12,12 @@ Propositional symbols: Character between A and Z, all uppercase.
 0: false
 1: true
 Negation: !
+Conjunction: &
+Disjunction: |
+Implication: |
+Biconditional: =
 
-Use parenthesis to define the precedence, if parenthesis não estiverem presentes, a ordem de avaliação dos operadores será, do maior para o menor:
+Use parenthesis to define the precedence, if parenthesis isn't present, the evaluation order of connectives will be, from biggest to smallest:
 
 !: 4
 &: 3
